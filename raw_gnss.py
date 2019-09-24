@@ -292,15 +292,15 @@ def pr_residual(measurements, signal='C1C', no_weight=False, no_nans=False):
     rows = []
 
     for meas in measurements:
-      if signal in meas.observables_final and np.isfinite(meas.observables_final[signal]):
+      if signal in meas.observables_final and np.isfinite(meas.observables_final[signal]):#?
         pr = meas.observables_final[signal]
         sat_pos = meas.sat_pos_final
         theta = 0
       elif signal in meas.observables and np.isfinite(meas.observables[signal]) and meas.processed:
         pr = meas.observables[signal]
         pr += meas.sat_clock_err * constants.SPEED_OF_LIGHT
-        sat_pos = meas.sat_pos
-        theta = constants.EARTH_ROTATION_RATE * (pr - lista[4]) / constants.SPEED_OF_LIGHT
+        sat_pos = meas.sat_pos 
+        theta = constants.EARTH_ROTATION_RATE * (pr - lista[4]) / constants.SPEED_OF_LIGHT # theta é o quanto a posição do satelite foi deslocada pela rotação da terra durante a transmissão do sinal = rotacao * (delta T)
       else:
         if not no_nans:
           rows.append(np.nan)
@@ -311,12 +311,12 @@ def pr_residual(measurements, signal='C1C', no_weight=False, no_nans=False):
         weight = (1 / meas.observables_std[signal])
 
       if get_constellation(meas.prn) == 'GLONASS':
-        rows.append(weight * (np.sqrt(
-          (sat_pos[0] * np.cos(theta) + sat_pos[1] * np.sin(theta) - lista[0])**2 +
-          (sat_pos[1] * np.cos(theta) - sat_pos[0] * np.sin(theta) - lista[1])**2 +
-          (sat_pos[2] - lista[2])**2) - (pr - lista[3] - lista[4])))
+        rows.append(weight * (np.sqrt( # distancia do usuario para o satelite(pag 84 formula 9a) - (pseudorange - bias do clock local) = erro
+          (sat_pos[0] * np.cos(theta) + sat_pos[1] * np.sin(theta) - lista[0])**2 + # sat.x - chute.x
+          (sat_pos[1] * np.cos(theta) - sat_pos[0] * np.sin(theta) - lista[1])**2 +# sat.y - chute.y
+          (sat_pos[2] - lista[2])**2) - (pr - lista[3] - lista[4]))) # sat.z - chute.z
       elif get_constellation(meas.prn) == 'GPS':
-        rows.append(weight * (np.sqrt(
+        rows.append(weight * (np.sqrt(# equivalente ao de cima, mas com um bias a menos sendo necessario
           (sat_pos[0] * np.cos(theta) + sat_pos[1] * np.sin(theta) - lista[0])**2 +
           (sat_pos[1] * np.cos(theta) - sat_pos[0] * np.sin(theta) - lista[1])**2 +
           (sat_pos[2] - lista[2])**2) - (pr - lista[3])))
