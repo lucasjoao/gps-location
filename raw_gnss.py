@@ -292,11 +292,11 @@ def pr_residual(measurements, signal='C1C', no_weight=False, no_nans=False):
     rows = []
 
     for meas in measurements:
-      if signal in meas.observables_final and np.isfinite(meas.observables_final[signal]):#?
+      if signal in meas.observables_final and np.isfinite(meas.observables_final[signal]):# se as posições do satélite ja foram corrigidas, então não precisa corrigir mais
         pr = meas.observables_final[signal]
         sat_pos = meas.sat_pos_final
         theta = 0
-      elif signal in meas.observables and np.isfinite(meas.observables[signal]) and meas.processed:
+      elif signal in meas.observables and np.isfinite(meas.observables[signal]) and meas.processed:# se as posições do satelite não foram corrigidas, ele corrige a posição do satelite aqui
         pr = meas.observables[signal]
         pr += meas.sat_clock_err * constants.SPEED_OF_LIGHT
         sat_pos = meas.sat_pos 
