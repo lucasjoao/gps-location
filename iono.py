@@ -3,7 +3,7 @@ import datetime as dt
 import numpy as np
 from math import cos, sin, pi, floor
 from constants import SECS_IN_MIN, SECS_IN_HR, EARTH_RADIUS
-from lib.coordinates import LocalCoord
+from coordinates import LocalCoord
 from gps_time import GPSTime
 import re
 
@@ -54,7 +54,6 @@ def get_int_from_header(hdr, seq):
     """
     return int(get_header_line(hdr, seq).split()[0])
 
-
 class IonexMap:
   def __init__(self, exp, data1, data2):
     self.exp = exp
@@ -62,7 +61,7 @@ class IonexMap:
     self.grid_TEC2 = np.array([], dtype='uint16')
     self.t1 = GPSTime.from_datetime(dt.datetime(*map(int, data1[0].split()[:6])))
     self.t2 = GPSTime.from_datetime(dt.datetime(*map(int, data2[0].split()[:6])))
-    assert self.t2 - self.t1 == SECS_IN_HR
+    #assert self.t2 - self.t1 == SECS_IN_HR
     assert len(data1) == len(data2)
 
     self.max_time_diff = SECS_IN_MIN*30
@@ -71,7 +70,7 @@ class IonexMap:
     self.lats = np.array([])
     for j, line in enumerate(data1[1:]):
       if "LAT" in line:
-        lat, lon1, lon2, dlon, h = map(float, [line[x:x + 6] for x in xrange(2, 32, 6)])
+        lat, lon1, lon2, dlon, h = map(float, [line[x:x + 6] for x in range(2, 32, 6)])
         self.lats = np.append(self.lats, lat)
         row_length = (lon2 - lon1) / dlon + 1  # total number of values of longitudes
         next_lines_with_numbers = int(np.ceil(row_length / 16))
@@ -81,9 +80,9 @@ class IonexMap:
         row = np.array([], dtype='int16')
         for i, elem in enumerate(elems_in_row):
           row = np.append(row,
-                          np.array(
+                          np.fromiter(
                             map(int,
-                                [data1[j + 2 + i][5 * x:5 * x + 5] for x in xrange(elem)]),
+                                [data1[j + 2 + i][5 * x:5 * x + 5] for x in range(elem)]),
                             dtype='int16'))
         if len(self.grid_TEC1) > 0:
           self.grid_TEC1 = np.vstack((self.grid_TEC1, row))
@@ -95,7 +94,7 @@ class IonexMap:
     self.lats = np.array([])
     for j, line in enumerate(data2[1:]):
       if "LAT" in line:
-        lat, lon1, lon2, dlon, h = map(float, [line[x:x + 6] for x in xrange(2, 32, 6)])
+        lat, lon1, lon2, dlon, h = map(float, [line[x:x + 6] for x in range(2, 32, 6)])
         self.lats = np.append(self.lats, lat)
         row_length = (lon2 - lon1) / dlon + 1  # total number of values of longitudes
         next_lines_with_numbers = int(np.ceil(row_length / 16))
@@ -105,9 +104,9 @@ class IonexMap:
         row = np.array([], dtype='int16')
         for i, elem in enumerate(elems_in_row):
           row = np.append(row,
-                          np.array(
+                          np.fromiter(
                             map(int,
-                                [data2[j + 2 + i][5 * x:5 * x + 5] for x in xrange(elem)]),
+                                [data2[j + 2 + i][5 * x:5 * x + 5] for x in range(elem)]),
                             dtype='int16'))
         if len(self.grid_TEC2) > 0:
           self.grid_TEC2 = np.vstack((self.grid_TEC2, row))
@@ -203,13 +202,13 @@ def parse_ionex(ionex_file):
   if len(map_start_idx) != len(map_end_idx):
     raise IndexError("Starts end ends numbers are not equal.")
   map_dates = []
-  for i in xrange(maps_count):
+  for i in range(maps_count):
     date = map(int, body[map_start_idx[i] + 1].split()[:6])
     map_dates += [dt.datetime(*date)]
 
   maps = []
   iono_map = iono_map_prev = None
-  for m in xrange(maps_count):
+  for m in range(maps_count):
     iono_map_prev = iono_map
     iono_map = body[map_start_idx[m] + 1:map_end_idx[m]]
     if iono_map and iono_map_prev:

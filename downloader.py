@@ -1,6 +1,7 @@
 import os
-import urllib2
-from urlparse import urlparse
+import urllib.request
+import urllib.error
+from urllib.parse import urlparse
 
 import gzip
 from constants import SECS_IN_DAY, SECS_IN_WEEK
@@ -30,10 +31,10 @@ def download_file(url_base, folder_path, cacheDir, filename, compression='', ove
 
     # try to download
     try:
-      print "pulling from", url_cache, "to", filepath
+      print ("pulling from", url_cache, "to", filepath)
       urlf = urllib2.urlopen(url_cache, timeout=5)
     except IOError as e:
-      print "cache download failed, pulling from", url, "to", filepath
+      print ("cache download failed, pulling from", url, "to", filepath)
       try:
         urlf = urllib2.urlopen(url)
       except IOError as e:
@@ -177,7 +178,7 @@ def download_ionex(time, cache_dir):
 def download_dcb(time, cache_dir):
   cache_subdir = cache_dir + 'dcb/'
   # seem to be a lot of data missing, so try many days
-  for time in [time - i*SECS_IN_DAY for i in xrange(14)]:
+  for time in [time - i*SECS_IN_DAY for i in range(14)]:
     try:
       t = time.as_datetime()
       url_base = 'ftp://cddis.nasa.gov/gnss/products/bias/'

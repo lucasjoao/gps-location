@@ -2,7 +2,7 @@ import scipy.optimize as opt
 import constants
 import numpy as np
 import datetime
-from lib.coordinates import LocalCoord
+from coordinates import LocalCoord
 from gps_time import GPSTime
 from helpers import rinex3_obs_from_rinex2_obs, \
                     get_nmea_id_from_prn, \
@@ -288,7 +288,7 @@ def calc_vel_fix(measurements, est_pos, v0=[0, 0, 0, 0], no_weight=False, signal
 
 def pr_residual(measurements, signal='C1C', no_weight=False, no_nans=False):
   # solve for pos
-  def Fx_pos((x, y, z, bc, bg), no_weight=no_weight):
+  def Fx_pos(lista, no_weight=no_weight): #x, y, z, bc, bg
     rows = []
 
     for meas in measurements:
@@ -300,7 +300,7 @@ def pr_residual(measurements, signal='C1C', no_weight=False, no_nans=False):
         pr = meas.observables[signal]
         pr += meas.sat_clock_err * constants.SPEED_OF_LIGHT
         sat_pos = meas.sat_pos
-        theta = constants.EARTH_ROTATION_RATE * (pr - bc) / constants.SPEED_OF_LIGHT
+        theta = constants.EARTH_ROTATION_RATE * (pr - lista[4]) / constants.SPEED_OF_LIGHT
       else:
         if not no_nans:
           rows.append(np.nan)
@@ -312,14 +312,14 @@ def pr_residual(measurements, signal='C1C', no_weight=False, no_nans=False):
 
       if get_constellation(meas.prn) == 'GLONASS':
         rows.append(weight * (np.sqrt(
-          (sat_pos[0] * np.cos(theta) + sat_pos[1] * np.sin(theta) - x)**2 +
-          (sat_pos[1] * np.cos(theta) - sat_pos[0] * np.sin(theta) - y)**2 +
-          (sat_pos[2] - z)**2) - (pr - bc - bg)))
+          (sat_pos[0] * np.cos(theta) + sat_pos[1] * np.sin(theta) - lista[0])**2 +
+          (sat_pos[1] * np.cos(theta) - sat_pos[0] * np.sin(theta) - lista[1])**2 +
+          (sat_pos[2] - lista[2])**2) - (pr - lista[3] - lista[4])))
       elif get_constellation(meas.prn) == 'GPS':
         rows.append(weight * (np.sqrt(
-          (sat_pos[0] * np.cos(theta) + sat_pos[1] * np.sin(theta) - x)**2 +
-          (sat_pos[1] * np.cos(theta) - sat_pos[0] * np.sin(theta) - y)**2 +
-          (sat_pos[2] - z)**2) - (pr - bc)))
+          (sat_pos[0] * np.cos(theta) + sat_pos[1] * np.sin(theta) - lista[0])**2 +
+          (sat_pos[1] * np.cos(theta) - sat_pos[0] * np.sin(theta) - lista[1])**2 +
+          (sat_pos[2] - lista[2])**2) - (pr - lista[3])))
     return rows
   return Fx_pos
 
