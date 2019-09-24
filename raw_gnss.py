@@ -264,9 +264,9 @@ def calc_pos_fix(measurements, x0=[0, 0, 0, 0, 0], no_weight=False, signal='C1C'
   if n < 6:
       return []
 
-  Fx_pos = pr_residual(measurements, signal=signal, no_weight=no_weight, no_nans=True)
-  opt_pos = opt.least_squares(Fx_pos, x0).x
-  return opt_pos, Fx_pos(opt_pos, no_weight=True)
+  Fx_pos = pr_residual(measurements, signal=signal, no_weight=no_weight, no_nans=True)# isso é uma função que calcula o residuo(erro) entre o peseudorange e valores chutados
+  opt_pos = opt.least_squares(Fx_pos, x0).x # o least squares otimiza os valores chutados para minimizar o erro que a função Fx_pos calcula
+  return opt_pos, Fx_pos(opt_pos, no_weight=True) # retorna a posicao otimizada e o erro da posicao otimizada
 
 
 def calc_vel_fix(measurements, est_pos, v0=[0, 0, 0, 0], no_weight=False, signal='D1C'):
