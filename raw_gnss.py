@@ -311,7 +311,7 @@ def pr_residual(measurements, signal='C1C', no_weight=False, no_nans=False):
         weight = (1 / meas.observables_std[signal])
 
       if get_constellation(meas.prn) == 'GLONASS':
-        rows.append(weight * (np.sqrt( # distancia do usuario para o satelite(pag 84 formula 9a) - (pseudorange - bias do clock local) = erro
+        rows.append(weight * (np.sqrt( # distancia do usuario para o satelite(pag 84 formula 9a) - (pseudorange - bias do clock local) = erro(ver formula na pagina do wikipedia na seção do least squares)
           (sat_pos[0] * np.cos(theta) + sat_pos[1] * np.sin(theta) - lista[0])**2 + # sat.x - chute.x
           (sat_pos[1] * np.cos(theta) - sat_pos[0] * np.sin(theta) - lista[1])**2 +# sat.y - chute.y
           (sat_pos[2] - lista[2])**2) - (pr - lista[3] - lista[4]))) # sat.z - chute.z
