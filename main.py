@@ -44,9 +44,11 @@ for meas_epoch in measurements_by_epoch[::10]: # vai processar 10 instantes
   pos_solutions.append(raw.calc_pos_fix(corrected)) # calcula a estimativa da posição usando as posições de satélite corrigidas em relação ao delay da transmissão
 
 print("coordenadas no sistema ECEF")
-for i,sol in enum(pos_solutions):
-    print('epoch: ' + str(1))
+i = 0
+for sol in pos_solutions:
+    print('epoch: ' + str(i))
     print('x: ' + str(sol[0][0]))
     print('y: ' + str(sol[0][1]))
     print('z: ' + str(sol[0][2]))
     print()
+    i = i + 1
