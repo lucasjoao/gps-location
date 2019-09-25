@@ -1,13 +1,25 @@
-# gps-location
-https://www.u-blox.com/sites/default/files/products/documents/GPS-Compendium_Book_%28GPS-X-02007%29.pdf
-https://github.com/commaai/laika
+# laika adaptado
 
-usar python3
+Simples adaptação da biblioteca [laika](https://github.com/commaai/laika):
 
-sudo python main.py
+- em python 3
+- \+ comentários explicativos
+- remoção de código desnecessário
+- um único exemplo com foco no cálculo de posição
 
-dependencias:
--numpy
--scypy
+### Requisitos
+
+- python 3
+- numpy
+- scipy
+
+### Execução
+
+Basta executar o arquivo `main.py`.
 
 
+### Autores
+
+- [@lucasjoao](https://github.com/lucasjoao)
+- [@reolon](https://github.com/reolon)
+- [@wagnerbsantos](https://github.com/wagnerbsantos)
