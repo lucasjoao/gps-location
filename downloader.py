@@ -2,6 +2,7 @@ import os
 import urllib.request
 import urllib.error
 from urllib.parse import urlparse
+from urllib.request import urlopen
 
 import gzip
 from constants import SECS_IN_DAY, SECS_IN_WEEK
@@ -32,11 +33,11 @@ def download_file(url_base, folder_path, cacheDir, filename, compression='', ove
     # try to download
     try:
       print ("pulling from", url_cache, "to", filepath)
-      urlf = urllib2.urlopen(url_cache, timeout=5)
+      urlf = urlopen(url_cache, timeout=5)
     except IOError as e:
       print ("cache download failed, pulling from", url, "to", filepath)
       try:
-        urlf = urllib2.urlopen(url)
+        urlf = urlopen(url)
       except IOError as e:
         raise IOError("Could not download file from: " + url)
 
@@ -194,7 +195,7 @@ def download_dcb(time, cache_dir):
 def download_cors_coords(cache_dir):
   cache_subdir = cache_dir + 'cors_coord/'
   url_base = 'ftp://geodesy.noaa.gov/cors/coord/coord_08/'
-  url_path = urllib2.urlopen(url_base)
+  url_path = urlopen(url_base)
   file_names = [file_string.split()[-1] for file_string in url_path.read().split('\r\n') if len(file_string) > 5]
   file_names = [file_name for file_name in file_names if file_name[-9:] == 'coord.txt']
   filepaths = []

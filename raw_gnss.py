@@ -264,7 +264,7 @@ def calc_pos_fix(measurements, x0=[0, 0, 0, 0, 0], no_weight=False, signal='C1C'
   if n < 6:
       return []
 
-  Fx_pos = pr_residual(measurements, signal=signal, no_weight=no_weight, no_nans=True)# isso é uma função que calcula o residuo(erro) entre o peseudorange e valores chutados
+  Fx_pos = pr_residual(measurements, signal=signal, no_weight=no_weight, no_nans=True) # isso é uma função que calcula o residuo(erro) entre o peseudorange e valores chutados
   opt_pos = opt.least_squares(Fx_pos, x0).x # o least squares otimiza os valores chutados para minimizar o erro que a função Fx_pos calcula
   return opt_pos, Fx_pos(opt_pos, no_weight=True) # retorna a posicao otimizada e o erro da posicao otimizada
 
@@ -299,7 +299,7 @@ def pr_residual(measurements, signal='C1C', no_weight=False, no_nans=False):
       elif signal in meas.observables and np.isfinite(meas.observables[signal]) and meas.processed:# se as posições do satelite não foram corrigidas, ele corrige a posição do satelite aqui
         pr = meas.observables[signal]
         pr += meas.sat_clock_err * constants.SPEED_OF_LIGHT
-        sat_pos = meas.sat_pos 
+        sat_pos = meas.sat_pos
         theta = constants.EARTH_ROTATION_RATE * (pr - lista[4]) / constants.SPEED_OF_LIGHT # theta é o quanto a posição do satelite foi deslocada pela rotação da terra durante a transmissão do sinal = rotacao * (delta T)
       else:
         if not no_nans:

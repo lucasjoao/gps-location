@@ -1,11 +1,9 @@
-from coordinates import ecef2geodetic, geodetic2ecef
 import numpy as np
 from astro_dog import AstroDog
 from datetime import datetime
 from gps_time import GPSTime
 import raw_gnss as raw
 import helpers as helpers
-import matplotlib.pyplot as plt
 
 dog = AstroDog()
 time = GPSTime.from_datetime(datetime(2018,1,7))
@@ -32,18 +30,18 @@ print( 'Exemplo de raw data de um satelite\n'
         ,measurements[0].observables)#observables ta no formato rinex
 
 # we organize the measurements by epoch and by sattelite for easy plotting
-measurements_by_epoch = raw.group_measurements_by_epoch(measurements)# uma epoch é um instante onde foram obtidas todas as medições dos satelites disponiveis
+measurements_by_epoch = raw.group_measurements_by_epoch(measurements) # uma epoch é um instante onde foram obtidas todas as medições dos satelites disponiveis
 measurements_by_sattelite = raw.group_measurements_by_sat(measurements)
 
-pos_solutions, vel_solutions = [], []
+pos_solutions = []
 corrected_measurements_by_epoch = []
 
 for meas_epoch in measurements_by_epoch[::10]: # vai processar 10 instantes
-  processed = raw.process_measurements(meas_epoch, dog)# popula dados no objeto
+  processed = raw.process_measurements(meas_epoch, dog) # popula dados no objeto
   est_pos = raw.calc_pos_fix(processed)[0][:3] # calcula uma estimativa da posição
   corrected = raw.correct_measurements(meas_epoch, est_pos, dog) # corrige a posição do satelite usando o daly calculado usando as estimativas de posição encontrado
   corrected_measurements_by_epoch.append(corrected)
-  pos_solutions.append(raw.calc_pos_fix(corrected))#calcula a estimativa da posição usando as posições de satélite corrigidas em relação ao delay da transmissão
+  pos_solutions.append(raw.calc_pos_fix(corrected)) # calcula a estimativa da posição usando as posições de satélite corrigidas em relação ao delay da transmissão
 
 print("coordenadas no sistema ECEF")
 for i,sol in enum(pos_solutions):
