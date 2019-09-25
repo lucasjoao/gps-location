@@ -12,6 +12,7 @@ Simples adaptação da biblioteca [laika](https://github.com/commaai/laika):
 - python 3
 - numpy
 - scipy
+- executar em plataforma baseado em debian com libfreetype6-dev
 
 ### Execução
 
