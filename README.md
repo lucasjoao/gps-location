@@ -27,3 +27,8 @@ Por exemplo:
 - [@lucasjoao](https://github.com/lucasjoao)
 - [@reolon](https://github.com/reolon)
 - [@wagnerbsantos](https://github.com/wagnerbsantos)
+
+### Mais informações sobre formatos e interface de GNSS
+
+- [navipedia para um geral](https://gssc.esa.int/navipedia/index.php/Interfaces_and_Protocols)
+- [nmea -> gpgga](http://aprs.gids.nl/nmea/#gga)
